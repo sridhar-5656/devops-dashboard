@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Deployment Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --success: #34d399;
+            --success-glow: rgba(52, 211, 153, 0.25);
+            --accent: #818cf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.12) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .health-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            width: 100%;
+        }
+
+        .health-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .health-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .btn-check {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-check:hover {
+            background: rgba(56, 189, 248, 0.25);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: var(--primary);
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        footer {
+            margin-top: 3rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">
+                <span class="badge-dot"></span> System Operational
+            </div>
+            <h1>DevOps Deployment Dashboard</h1>
+            <p class="subtitle">CI/CD Automated Deployment Monitoring</p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-label">App Version</div>
+                <div class="card-value" style="color: var(--primary);">{{ version }}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Environment</div>
+                <div class="card-value" style="color: var(--accent);">{{ environment }}</div>
+            </div>
+            <div class="card">
+                <div class="card-label">Deployment Engine</div>
+                <div class="card-value" style="color: var(--success);">{{ deployment }}</div>
+            </div>
+        </div>
+
+        <div class="health-section">
+            <div class="health-header">
+                <div class="health-title">API Health Check Endpoint</div>
+                <button class="btn-check" onclick="checkHealth()">Run Health Check</button>
+            </div>
+            <pre id="health-output">Click "Run Health Check" or GET /health to fetch raw status JSON.</pre>
+        </div>
+    </div>
+
+    <footer>
+        DevOps Pipeline Demo &bull; Flask {{ version }}
+    </footer>
+
+    <script>
+        async function checkHealth() {
+            const outputEl = document.getElementById('health-output');
+            outputEl.textContent = 'Checking /health...';
+            try {
+                const res = await fetch('/health');
+                const data = await res.json();
+                outputEl.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                outputEl.textContent = 'Error fetching health status: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
